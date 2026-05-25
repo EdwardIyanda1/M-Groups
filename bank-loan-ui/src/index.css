@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Poppins', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  /* Dark Mode Neumorphic Extrusion (Outset Soft Shadow Pairs) */
+  .neumorphic-outset {
+    background: #0e061f;
+    box-shadow: 6px 6px 12px #030107, -4px -4px 12px #1c0f3d;
+  }
+  
+  /* Dark Mode Neumorphic Indentation (Inset Soft Shadow Pairs for Active States/Inputs) */
+  .neumorphic-inset {
+    background: #090314;
+    box-shadow: inset 4px 4px 8px #030107, inset -3px -3px 8px #180c35;
+  }
+
+  /* Claymorphism Styling (Vibrant Background with Light Top Inset & Dark Bottom Inset) */
+  .clay-purple {
+    background: #7c3aed;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3),
+                inset 0 4px 4px rgba(255, 255, 255, 0.4),
+                inset 0 -4px 6px rgba(0, 0, 0, 0.4);
+  }
+
+  .clay-pink {
+    background: #db2777;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3),
+                inset 0 4px 4px rgba(255, 255, 255, 0.4),
+                inset 0 -4px 6px rgba(0, 0, 0, 0.4);
+  }
+
+  .clay-emerald {
+    background: #059669;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3),
+                inset 0 3px 3px rgba(255, 255, 255, 0.4),
+                inset 0 -3px 4px rgba(0, 0, 0, 0.4);
+  }
+}
