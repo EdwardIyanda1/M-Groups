@@ -45,29 +45,27 @@ def register_user(request):
 def login_user(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Method not allowed.'}, status=405)
-        
-    try: # Outer try block opened
+    
+    try:
+        # Only load the body once
         data = json.loads(request.body)
         email = data.get('email')
         password = data.get('password')
 
         if not email or not password:
-            return JsonResponse({'error': 'Both email and password fields are required.'}, status=400)
+            return JsonResponse({'error': 'Email and password required.'}, status=400)
 
-        # 1. Attempt email lookup
-        try:
-            user_profile = User.objects.get(email=email)
-            resolved_username = user_profile.username
-        except User.DoesNotExist:
-            return JsonResponse({'error': 'Invalid email or password mapping.'}, status=401)
-        except User.MultipleObjectsReturned:
-            return JsonResponse({
-                'error': 'Multiple accounts share this email address. Integrity compromised.'
-            }, status=400)
-
-        # 2. Execute verification checks
-        user = authenticate(request, username=resolved_username, password=password)
+        # 1. Attempt authentication
+        user = authenticate(request, username=email, password=password)
         
+        # 2. Fallback: If user is None, try looking up by email specifically
+        if user is None:
+            try:
+                user_obj = User.objects.get(email=email)
+                user = authenticate(request, username=user_obj.username, password=password)
+            except User.DoesNotExist:
+                return JsonResponse({'error': 'User not found.'}, status=404)
+
         if user is not None:
             if user.is_active:
                 login(request, user)
@@ -75,22 +73,36 @@ def login_user(request):
                     'id': user.id,
                     'username': user.username,
                     'email': user.email,
-                    'role': getattr(user, 'role', 'customer')
+                    'role': getattr(user, 'role', 'customer'),
+                    'is_staff': user.is_staff
                 }, status=200)
             else:
-                return JsonResponse({'error': 'This user account is flagged deactivated.'}, status=403)
-        else:
-            return JsonResponse({'error': 'Invalid email or password mapping.'}, status=401)
-            
-    # FIXED: Added the missing outer except block to close the try layout cleanly
-    except Exception as e:
-        return JsonResponse({'error': f'Internal Server Error: {str(e)}'}, status=500)
+                return JsonResponse({'error': 'Account deactivated.'}, status=403)
         
+        return JsonResponse({'error': 'Invalid credentials.'}, status=401)
+            
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON format.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
 @csrf_exempt
 def loan_request_list_create(request):
     if request.method == 'GET':
-        loans = LoanRequest.objects.all().values('id', 'user__username', 'amount', 'purpose', 'status', 'created_at')
-        return JsonResponse(list(loans), safe=False)
+        # Fetch loans and include calculation
+        loans = LoanRequest.objects.all()
+        data = []
+        for loan in loans:
+            data.append({
+                'id': loan.id,
+                'user__username': loan.user.username,
+                'amount': float(loan.amount),
+                'purpose': loan.purpose,
+                'status': loan.status,
+                'remaining_balance': float(loan.remaining_balance),
+                'created_at': loan.created_at
+            })
+        return JsonResponse(data, safe=False)
     elif request.method == 'POST':
         data = json.loads(request.body)
         user = get_object_or_404(User, id=data.get('user_id'))

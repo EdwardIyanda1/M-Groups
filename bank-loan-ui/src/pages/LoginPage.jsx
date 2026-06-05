@@ -26,8 +26,8 @@ export default function LoginPage() {
       });
 
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || "Authentication payload verification failed.");
+        // Simplified error handling
+        throw new Error("Invalid email or password. Please try again.");
       }
 
       const userData = await res.json();
@@ -70,7 +70,7 @@ export default function LoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ENTER EMAIL"
+                placeholder="email@example.com"
                 required
                 className="w-full pl-10 pr-4 py-3 bg-white border-2 border-black text-xs font-bold font-mono outline-none focus:bg-[#F4F7F2]"
               />
@@ -108,17 +108,16 @@ export default function LoginPage() {
             disabled={submitting}
             className="w-full bg-[#3B52F6] text-white font-black border-2 border-black py-3.5 px-4 shadow-[4px_4px_0px_#000000] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2 uppercase text-xs tracking-wider mt-2 disabled:opacity-50"
           >
-            {submitting ? "Verifying Token..." : <>Execute Access Sequence <ArrowRight size={14} strokeWidth={2.5} /></>}
+            {submitting ? "Logging in..." : <>Login <ArrowRight size={14} strokeWidth={2.5} /></>}
           </button>
         </form>
 
         <div className="mt-6 pt-4 border-t-2 border-black text-center text-xs font-bold text-gray-600 uppercase tracking-wide">
-          Don't have an account{' '}
+          Don't have an account?{' '}
           <Link to="/register" className="text-[#3B52F6] underline decoration-2 underline-offset-4">
-            Signup
+            Sign up
           </Link>
         </div>
-
       </div>
     </div>
   );

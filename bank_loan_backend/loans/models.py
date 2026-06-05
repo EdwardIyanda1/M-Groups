@@ -39,6 +39,14 @@ class LoanRequest(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def total_repaid(self):
+        return sum(r.amount_paid for r in self.repayments.all())
+
+    @property
+    def remaining_balance(self):
+        return self.amount - self.total_repaid
+    
     def __str__(self):
         return f"Loan APX-00{self.id} | {self.user.username} | {self.status}"
 

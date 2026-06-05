@@ -1,6 +1,6 @@
 // src/pages/RegisterPage.jsx
 import React, { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { 
   User, Mail, Lock, Eye, EyeOff, ArrowRight, ArrowLeft, 
@@ -19,7 +19,7 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState({
     username: '', email: '', password: '',
     firstName: '', lastName: '', dob: '', address: '',
-    bvn: '', nin: '', driversLicense: '',
+    bvn: '', nin: '',
     nextOfKinName: '', nextOfKinRelationship: '', nextOfKinPhone: ''
   });
 
@@ -31,17 +31,17 @@ export default function RegisterPage() {
   const validateStep = () => {
     setError(null);
     if (step === 1 && (!formData.username || !formData.email || !formData.password)) {
-      setError("Please fill out account access parameter logs completely."); return false;
+      setError("Please fill in all account details."); return false;
     }
     if (step === 2 && (!formData.firstName || !formData.lastName || !formData.dob || !formData.address)) {
-      setError("Personal description rows cannot be empty."); return false;
+      setError("Please fill in all personal information."); return false;
     }
     if (step === 3) {
-      if (!formData.bvn || !formData.nin) { setError("Both BVN and NIN fields must map numerical parameters."); return false; }
-      if (formData.bvn.length !== 11 || formData.nin.length !== 11) { setError("Legal identity logs must equal exactly 11 digits."); return false; }
+      if (!formData.bvn || !formData.nin) { setError("BVN and NIN are required."); return false; }
+      if (formData.bvn.length !== 11 || formData.nin.length !== 11) { setError("ID numbers must be 11 digits."); return false; }
     }
     if (step === 4 && (!formData.nextOfKinName || !formData.nextOfKinRelationship || !formData.nextOfKinPhone)) {
-      setError("Next of Kin metrics are mandatory components."); return false;
+      setError("Please provide emergency contact information."); return false;
     }
     return true;
   };
@@ -60,9 +60,9 @@ export default function RegisterPage() {
 
       if (!res.ok) {
         const errData = await res.json();
-        throw new Error(errData.error || "Failed to compile security record indices.");
+        throw new Error(errData.error || "Registration failed.");
       }
-      alert("Registration sequence approved. Proceeding to access clearance gate.");
+      alert("Registration successful. You can now log in.");
       navigate('/login');
     } catch (err) {
       setError(err.message);
@@ -75,19 +75,18 @@ export default function RegisterPage() {
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-6 font-sans text-left">
       <div className="w-full max-w-xl bg-white border-4 border-black p-6 sm:p-8 shadow-[8px_8px_0px_#000000] relative">
         
-        {/* Horizontal Pipeline Steps Tracker */}
         <div className="flex justify-between items-start border-b-4 border-black pb-4 mb-6 gap-4">
           <div className="space-y-1">
-            <h2 className="text-xl sm:text-2xl font-black text-black uppercase tracking-tight">Onboarding Desk</h2>
-            <span className="block text-[9px] font-mono font-black uppercase text-gray-500 tracking-wider">
-              {step === 1 && "Phase 1: Credentials Staging"}
-              {step === 2 && "Phase 2: Individual Descriptive Data"}
-              {step === 3 && "Phase 3: Statutory KYC Requirements"}
-              {step === 4 && "Phase 4: Emergency Contingency Contacts"}
+            <h2 className="text-2xl font-black text-black uppercase">Create Account</h2>
+            <span className="text-[10px] font-bold text-gray-500 uppercase">
+              {step === 1 && "Step 1: Account Login Details"}
+              {step === 2 && "Step 2: Personal Information"}
+              {step === 3 && "Step 3: Identity Verification (KYC)"}
+              {step === 4 && "Step 4: Emergency Contacts"}
             </span>
           </div>
-          <div className="bg-[#B9E88A] border-2 border-black font-mono text-xs font-black uppercase px-3 py-1.5 shadow-[2px_2px_0px_#000000] flex-shrink-0">
-            Node {step} / 4
+          <div className="bg-[#B9E88A] border-2 border-black font-bold text-xs px-3 py-1.5 shadow-[2px_2px_0px_#000000]">
+            Step {step} / 4
           </div>
         </div>
 
@@ -96,136 +95,59 @@ export default function RegisterPage() {
         <form onSubmit={handleRegisterSubmit} className="space-y-4">
           
           {step === 1 && (
-            <div className="space-y-4 animate-fadeIn">
-              <div>
-                <label className="block text-xs font-black uppercase mb-2 text-black">Account Username</label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-black"><User size={15} strokeWidth={2.5}/></span>
-                  <input type="text" name="username" value={formData.username} onChange={handleInputChange} placeholder="CREATE RECORD IDENTIFIER" required className="w-full pl-10 pr-4 py-2.5 bg-white border-2 border-black text-xs font-mono font-bold outline-none focus:bg-[#F4F7F2]" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-black uppercase mb-2 text-black">Email Mapping Node</label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-black"><Mail size={15} strokeWidth={2.5}/></span>
-                  <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="NAME@DOMAIN.COM" required className="w-full pl-10 pr-4 py-2.5 bg-white border-2 border-black text-xs font-mono font-bold outline-none focus:bg-[#F4F7F2]" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-black uppercase mb-2 text-black">Private Security Passcode</label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-black"><Lock size={15} strokeWidth={2.5}/></span>
-                  <input type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleInputChange} placeholder="••••••••" required className="w-full pl-10 pr-11 py-2.5 bg-white border-2 border-black text-xs font-mono font-bold outline-none focus:bg-[#F4F7F2]" />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-black">{showPassword ? <EyeOff size={15} strokeWidth={2.5}/> : <Eye size={15} strokeWidth={2.5}/>}</button>
-                </div>
-              </div>
+            <div className="space-y-4">
+              <label className="block text-xs font-bold uppercase text-black">Username</label>
+              <input type="text" name="username" value={formData.username} onChange={handleInputChange} placeholder="e.g. johndoe" className="w-full p-3 border-2 border-black" />
+              <label className="block text-xs font-bold uppercase text-black">Email</label>
+              <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="email@example.com" className="w-full p-3 border-2 border-black" />
+              <label className="block text-xs font-bold uppercase text-black">Password</label>
+              <input type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleInputChange} placeholder="••••••••" className="w-full p-3 border-2 border-black" />
             </div>
           )}
 
           {step === 2 && (
-            <div className="space-y-4 animate-fadeIn">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-black uppercase mb-2 text-black">Legal First Name</label>
-                  <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="FIRST NAME" required className="w-full px-4 py-2.5 bg-white border-2 border-black text-xs font-bold outline-none focus:bg-[#F4F7F2]" />
-                </div>
-                <div>
-                  <label className="block text-xs font-black uppercase mb-2 text-black">Legal Last Name</label>
-                  <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="LAST NAME" required className="w-full px-4 py-2.5 bg-white border-2 border-black text-xs font-bold outline-none focus:bg-[#F4F7F2]" />
-                </div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="First Name" className="p-3 border-2 border-black" />
+                <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Last Name" className="p-3 border-2 border-black" />
               </div>
-              <div>
-                <label className="block text-xs font-black uppercase mb-2 text-black">Date of Birth</label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-black"><Calendar size={15} strokeWidth={2.5}/></span>
-                  <input type="date" name="dob" value={formData.dob} onChange={handleInputChange} required className="w-full pl-10 pr-4 py-2.5 bg-white border-2 border-black text-xs font-mono font-bold outline-none text-left" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-black uppercase mb-2 text-black">Residential Physical Address</label>
-                <div className="relative">
-                  <span className="absolute top-3 left-0 pl-3.5 flex items-start text-black"><MapPin size={15} strokeWidth={2.5}/></span>
-                  <textarea name="address" value={formData.address} onChange={handleInputChange} placeholder="STREET RESIDENCE LOCATION INDEX MAPPINGS..." required rows="2" className="w-full pl-10 pr-4 py-2.5 bg-white border-2 border-black text-xs font-bold uppercase outline-none focus:bg-[#F4F7F2] resize-none" />
-                </div>
-              </div>
+              <input type="date" name="dob" value={formData.dob} onChange={handleInputChange} className="w-full p-3 border-2 border-black" />
+              <textarea name="address" value={formData.address} onChange={handleInputChange} placeholder="Home Address" rows="2" className="w-full p-3 border-2 border-black" />
             </div>
           )}
 
           {step === 3 && (
-            <div className="space-y-4 animate-fadeIn">
-              <div>
-                <label className="block text-xs font-black uppercase mb-2 text-black">Bank Verification Number (BVN)</label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-black"><Fingerprint size={15} strokeWidth={2.5}/></span>
-                  <input type="number" name="bvn" value={formData.bvn} onChange={handleInputChange} placeholder="11-DIGIT ID" required className="w-full pl-10 pr-4 py-2.5 bg-white border-2 border-black text-xs font-mono font-black outline-none tracking-widest focus:bg-[#F4F7F2]" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-black uppercase mb-2 text-black">National Identity Number (NIN)</label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-black"><Fingerprint size={15} strokeWidth={2.5}/></span>
-                  <input type="number" name="nin" value={formData.nin} onChange={handleInputChange} placeholder="11-DIGIT ID" required className="w-full pl-10 pr-4 py-2.5 bg-white border-2 border-black text-xs font-mono font-black outline-none tracking-widest focus:bg-[#F4F7F2]" />
-                </div>
-              </div>
+            <div className="space-y-4">
+              <input type="number" name="bvn" value={formData.bvn} onChange={handleInputChange} placeholder="11-digit BVN" className="w-full p-3 border-2 border-black" />
+              <input type="number" name="nin" value={formData.nin} onChange={handleInputChange} placeholder="11-digit NIN" className="w-full p-3 border-2 border-black" />
             </div>
           )}
 
           {step === 4 && (
-            <div className="space-y-4 animate-fadeIn">
-              <div>
-                <label className="block text-xs font-black uppercase mb-2 text-black">Next of Kin Full Name</label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-black"><User size={15} strokeWidth={2.5}/></span>
-                  <input type="text" name="nextOfKinName" value={formData.nextOfKinName} onChange={handleInputChange} placeholder="KIN DESIGNATION FULL NAME" required className="w-full pl-10 pr-4 py-2.5 bg-white border-2 border-black text-xs font-bold outline-none focus:bg-[#F4F7F2]" />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-black uppercase mb-2 text-black">Relationship Connection</label>
-                  <input type="text" name="nextOfKinRelationship" value={formData.nextOfKinRelationship} onChange={handleInputChange} placeholder="E.G. SIBLING, PARENT" required className="w-full px-4 py-2.5 bg-white border-2 border-black text-xs font-bold outline-none focus:bg-[#F4F7F2]" />
-                </div>
-                <div>
-                  <label className="block text-xs font-black uppercase mb-2 text-black">Kin Telephone Line</label>
-                  <div className="relative">
-                    <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-black"><Phone size={14} strokeWidth={2.5}/></span>
-                    <input type="tel" name="nextOfKinPhone" value={formData.nextOfKinPhone} onChange={handleInputChange} placeholder="CONTACT NUMBER" required className="w-full pl-9 pr-4 py-2.5 bg-white border-2 border-black text-xs font-mono font-bold outline-none focus:bg-[#F4F7F2]" />
-                  </div>
-                </div>
-              </div>
+            <div className="space-y-4">
+              <input type="text" name="nextOfKinName" value={formData.nextOfKinName} onChange={handleInputChange} placeholder="Next of Kin Full Name" className="w-full p-3 border-2 border-black" />
+              <input type="text" name="nextOfKinRelationship" value={formData.nextOfKinRelationship} onChange={handleInputChange} placeholder="Relationship (e.g. Spouse)" className="w-full p-3 border-2 border-black" />
+              <input type="tel" name="nextOfKinPhone" value={formData.nextOfKinPhone} onChange={handleInputChange} placeholder="080XXXXXXXX" className="w-full p-3 border-2 border-black" />
             </div>
           )}
 
-          {/* Nav Pipeline Trigger Keys */}
           <div className="flex gap-4 pt-4 border-t-2 border-black mt-6">
             {step > 1 && (
-              <button
-                type="button"
-                onClick={() => setStep(prev => prev - 1)}
-                className="bg-white hover:bg-gray-100 border-2 border-black text-black px-4 py-3 font-black rounded-none shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all"
-              >
-                <ArrowLeft size={14} strokeWidth={2.5}/>
+              <button type="button" onClick={() => setStep(prev => prev - 1)} className="bg-white border-2 border-black p-3 font-bold uppercase text-xs">
+                <ArrowLeft size={16}/> Back
               </button>
             )}
             
             {step < 4 ? (
-              <button
-                type="button"
-                onClick={() => { if (validateStep()) setStep(prev => prev + 1); }}
-                className="flex-grow bg-white hover:bg-gray-50 border-2 border-black text-black py-3 px-4 rounded-none font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-[3px_3px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
-              >
-                Advance Pipeline <ArrowRight size={14} strokeWidth={2.5}/>
+              <button type="button" onClick={() => { if (validateStep()) setStep(prev => prev + 1); }} className="flex-grow bg-white border-2 border-black p-3 font-bold uppercase text-xs">
+                Next <ArrowRight size={16} className="inline"/>
               </button>
             ) : (
-              <button
-                type="submit"
-                disabled={submitting}
-                className="flex-grow bg-[#3B52F6] text-white border-2 border-black py-3 px-4 rounded-none font-black text-xs uppercase tracking-wider shadow-[4px_4px_0px_#000000] flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60"
-              >
-                {submitting ? "Writing Indices..." : <>Commit Identity Record <ShieldCheck size={16} strokeWidth={2.5} /></>}
+              <button type="submit" disabled={submitting} className="flex-grow bg-[#3B52F6] text-white border-2 border-black p-3 font-bold uppercase text-xs">
+                {submitting ? "Registering..." : "Submit Registration"}
               </button>
             )}
           </div>
-
         </form>
       </div>
     </div>

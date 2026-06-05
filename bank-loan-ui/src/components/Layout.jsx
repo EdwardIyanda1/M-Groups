@@ -41,7 +41,7 @@ export default function Layout({ children }) {
                   <Search size={14} strokeWidth={2.5} />
                 </Link>
                 
-                {user.role = 'manager' && (
+                {(user?.role === 'manager' || user?.is_staff) && (
                   <Link to="/admin" className="bg-[#FFFF00] border-2 border-black px-2.5 py-1 text-[11px] shadow-[2px_2px_0px_#000000]">
                     Admin Panel
                   </Link>
