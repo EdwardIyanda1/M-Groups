@@ -50,6 +50,15 @@ class LoanRequest(models.Model):
     def __str__(self):
         return f"Loan APX-00{self.id} | {self.user.username} | {self.status}"
 
+class LoanDisbursement(models.Model):
+    loan = models.ForeignKey(LoanRequest, on_delete=models.CASCADE, related_name='disbursements')
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    disbursement_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, default='Completed') # Can track Pending/Completed
+
+    def __str__(self):
+        return f"Disbursement of {self.amount} for {self.loan.id}"
+    
 class LoanRepayment(models.Model):
     loan = models.ForeignKey(LoanRequest, on_delete=models.CASCADE, related_name='repayments')
     amount_paid = models.DecimalField(max_digits=12, decimal_places=2)

@@ -1,0 +1,11 @@
+# Core Django
+django>=5.2.3
+
+# Middleware for React frontend communication
+django-cors-headers>=4.4.0
+
+# Database adapters (if you migrate away from SQLite later)
+psycopg2-binary>=2.9.9
+
+# Environment variable management (for production security)
+python-dotenv>=1.0.1
