@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('auth', '0021_remove_user_date_of_birth_remove_user_is_pro_and_more'),
+        ('auth', '0012_alter_user_first_name_max_length'),
     ]
 
     operations = [
