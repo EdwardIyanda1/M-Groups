@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, logout, API_BASE: "http://127.0.0.1:8000/api" }}>
+    <AuthContext.Provider value={{ user, setUser, login, logout, API_BASE: "https://m-groups.onrender.com/api" }}>
       {children}
     </AuthContext.Provider>
   );
