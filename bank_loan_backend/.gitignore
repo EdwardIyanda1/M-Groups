@@ -1,0 +1,22 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Environment variables (Crucial for production security)
+.env
+
+# Database file (SQLite should not be in version control)
+db.sqlite3
+
+# Python Virtual Environments
+venv/
+env/
+.venv/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS-specific files
+.DS_Store
+Thumbs.db

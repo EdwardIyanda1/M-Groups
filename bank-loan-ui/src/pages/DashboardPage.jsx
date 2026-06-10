@@ -137,20 +137,24 @@ export default function DashboardPage() {
             </div>
           ) : (
             <div className="space-y-3">
-              {loans.map(loan => (
-                <div key={loan.id} className="border-2 border-black p-4 flex justify-between items-center">
-                  <div>
-                    <p className="text-xs font-bold uppercase">Loan ID: MGP-{loan.id}</p>
-                    <span className={`px-2 py-0.5 text-[9px] font-bold uppercase ${loan.status === 'Approved' ? 'bg-[#B9E88A]' : 'bg-[#FFFF00]'}`}>
-                      {loan.status}
-                    </span>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-bold">₦{parseFloat(loan.amount).toLocaleString()}</p>
-                    <p className="text-[10px] text-gray-500 font-bold uppercase">Requested</p>
-                  </div>
-                </div>
-              ))}
+{loans.map(loan => (
+  <div key={loan.id} className="border-2 border-black p-4 flex justify-between items-center bg-white">
+    <div>
+      <p className="text-xs font-bold uppercase">Loan ID: MGP-{loan.id}</p>
+      {/* Visual Status Indicator */}
+      <span className={`px-2 py-0.5 text-[9px] font-bold uppercase ${
+        loan.status === 'Approved' ? 'bg-[#B9E88A]' : 
+        loan.status === 'Rejected' ? 'bg-[#FF6B6B]' : 'bg-[#FFFF00]'
+      }`}>
+        {loan.status}
+      </span>
+    </div>
+    <div className="text-right">
+      <p className="text-sm font-bold">₦{parseFloat(loan.amount).toLocaleString()}</p>
+      <p className="text-[10px] text-gray-500 font-bold uppercase">Requested</p>
+    </div>
+  </div>
+))}
             </div>
           )}
         </div>

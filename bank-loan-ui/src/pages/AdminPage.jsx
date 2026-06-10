@@ -8,15 +8,22 @@ export default function AdminPage() {
   const [allLoans, setAllLoans] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const loadGlobalRegistry = async () => {
+const loadGlobalRegistry = async () => {
     try {
       const res = await fetch(`${API_BASE}/loans/`);
-      if (res.ok) setAllLoans(await res.json());
-    } catch (err) { console.error(err); } 
-    finally { setLoading(false); }
-  };
+      const data = await res.json();
+      console.log("DEBUG: Data fetched in Admin:", data); // Add this
+      if (res.ok) { 
+        setAllLoans(data); 
+      }
+    } catch (err) { 
+      console.error("DEBUG: Fetch error:", err); 
+    } finally {
+      setLoading(false);
+    }
+};
 
-  useEffect(() => { if (user?.role === 'manager' ) loadGlobalRegistry(); }, [user]);
+  useEffect(() => { if (user?.role === 'manager' || user?.is_staff) loadGlobalRegistry(); }, [user]);
 
   const mutateStatus = async (loanId, targetState) => {
     try {
@@ -52,32 +59,24 @@ export default function AdminPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {allLoans.map(loan => (
-          <div key={loan.id} className="bg-white border-2 border-black p-5 shadow-[4px_4px_0px_#000000] flex flex-col justify-between space-y-4">
-            <div className="border-b-2 border-black pb-2 flex justify-between items-center">
-              <span className="text-xs font-black uppercase">{loan.user__username}</span>
-              <span className="font-mono text-[10px] text-[#3B52F6]">REF-00{loan.id}</span>
-            </div>
-            
-            <p className="text-xs text-gray-800 font-semibold italic">"{loan.purpose}"</p>
-            
-            <div className="flex justify-between items-end pt-2 border-t border-gray-100">
-              <p className="text-base font-mono font-black text-black">₦{parseFloat(loan.amount).toLocaleString()}</p>
-
-              {/* Status Logic */}
-              {loan.status === 'Pending' ? (
-                <div className="flex gap-2">
-                  <button onClick={() => mutateStatus(loan.id, 'Approved')} className="bg-[#B9E88A] border-2 border-black px-3 py-1 font-black text-[10px] uppercase">Approve</button>
-                  <button onClick={() => mutateStatus(loan.id, 'Rejected')} className="bg-[#FF6B6B] border-2 border-black px-3 py-1 font-black text-[10px] uppercase">Reject</button>
-                </div>
-              ) : (
-                <span className={`px-3 py-1 border-2 border-black text-[9px] font-black uppercase tracking-widest ${
-                  loan.status === 'Approved' ? 'bg-[#B9E88A]' : 'bg-[#FF6B6B]'
-                }`}>
-                  {loan.status.toUpperCase()}
-                </span>
-              )}
-            </div>
-          </div>
+// Inside AdminPage.jsx, update the loan display card:
+<div key={loan.id} className="bg-white border-2 border-black p-5 shadow-[4px_4px_0px_#000000]">
+  <div className="flex justify-between items-center border-b-2 border-black pb-2 mb-2">
+    <span className="font-bold text-sm">{loan.user__username}</span>
+    <span className="font-mono text-xs text-blue-600">MGP-{loan.id}</span>
+  </div>
+  <p className="text-xs italic mb-4">"{loan.purpose}"</p>
+  <div className="flex justify-between items-center">
+    <p className="font-bold">₦{parseFloat(loan.amount).toLocaleString()}</p>
+    {/* Admin Action Buttons */}
+    {loan.status === 'Pending' && (
+      <div className="flex gap-2">
+        <button onClick={() => mutateStatus(loan.id, 'Approved')} className="bg-[#B9E88A] px-2 py-1 text-[10px] font-bold uppercase">Approve</button>
+        <button onClick={() => mutateStatus(loan.id, 'Rejected')} className="bg-[#FF6B6B] px-2 py-1 text-[10px] font-bold uppercase">Reject</button>
+      </div>
+    )}
+  </div>
+</div>
         ))}
       </div>
     </div>
