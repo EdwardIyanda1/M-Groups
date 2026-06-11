@@ -17,6 +17,8 @@ const CONTRIBUTORS = [
   { surname: 'Sanusi',          other: 'Khaliq Olamilekan',     matric: 'LCU/UG/24/29544',    dept: 'Software Engineering' },
   { surname: 'Ajose',           other: 'Emmanuel Olubukola',    matric: 'LCU/UG/24/31679',    dept: 'Software Engineering' },
   { surname: 'Olurinde',           other: 'Victor Oluwatomisin',    matric: 'LCU/UG/24/31574',    dept: 'Software Engineering' },
+  { surname: 'Olarenwaju ',           other: 'Emmanuel',    matric: 'LCU/UG/24/29562',    dept: 'Software Engineering' },
+  { surname: 'Okara ',           other: 'Marcel Binatari',    matric: 'LCU/UG/24/39145',    dept: 'Software Engineering' },
 ];
 
 export default function HomePage() {
